@@ -19,6 +19,7 @@ data class AppColorScheme(
     val secondaryContainer: Color,
     val onSecondaryContainer: Color,
     val secondarySurface: Color,
+    val secondaryText: Color,
 
     val background: Color,
     val onBackground: Color,
@@ -50,16 +51,59 @@ data class AppShape(
 )
 
 data class AppSize(
+    /**
+     * Extra Large 5 - 256px
+     */
     val extraLarge5: Dp,
+
+    /**
+     * Extra Large 4 - 128px
+     */
     val extraLarge4: Dp,
+
+    /**
+     * Extra Large 3 - 96px
+     */
     val extraLarge3: Dp,
+
+    /**
+     * Extra Large 2 - 64px
+     */
     val extraLarge2: Dp,
+
+    /**
+     * Extra Large - 32px
+     */
     val extraLarge: Dp,
+
+    /**
+     * Large - 24px
+     */
     val large: Dp,
+
+    /**
+     * Medium - 18px
+     */
     val medium: Dp,
+
+    /**
+     * Normal - 16px
+     */
     val normal: Dp,
+
+    /**
+     * Small - 12px
+     */
     val small: Dp,
+
+    /**
+     * Extra Small - 8px
+     */
     val extraSmall: Dp,
+
+    /**
+     * Extra Small 2 - 4px
+     */
     val extraSmall2: Dp
 )
 
@@ -76,6 +120,7 @@ val LocalAppColorScheme = staticCompositionLocalOf {
         secondaryContainer= Color.Unspecified,
         onSecondaryContainer= Color.Unspecified,
         secondarySurface= Color.Unspecified,
+        secondaryText = Color.Unspecified,
 
         background= Color.Unspecified,
         onBackground= Color.Unspecified,

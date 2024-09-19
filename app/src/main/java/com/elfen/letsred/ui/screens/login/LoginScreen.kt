@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Login
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -52,10 +50,10 @@ private fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val title = buildAnnotatedString {
-                    withStyle(SpanStyle(color = AppTheme.colorScheme.onSecondary)){
+                    withStyle(SpanStyle(color = AppTheme.colorScheme.onSecondary)) {
                         append("Lets")
                     }
-                    withStyle(SpanStyle(color = AppTheme.colorScheme.primary)){
+                    withStyle(SpanStyle(color = AppTheme.colorScheme.primary)) {
                         append("Red")
                     }
                 }

@@ -23,13 +23,17 @@ private val lightColorScheme = AppColorScheme(
     primaryContainer = Primary20,
     onPrimaryContainer = Primary80,
     primarySurface = Primary10,
+
     secondary = Grey60,
     onSecondary = Grey90,
     secondaryContainer = Grey20,
     onSecondaryContainer = Grey80,
     secondarySurface = Grey10,
+    secondaryText = Grey40,
+
     background = Color.White,
     onBackground = BodyLight,
+
     error = Error,
     success = Success,
     warning = Warning
@@ -42,13 +46,17 @@ private val darkColorScheme = AppColorScheme(
     primaryContainer = Primary80,
     onPrimaryContainer = Primary20,
     primarySurface = Primary90,
+
     secondary = Grey40,
     onSecondary = Grey10,
     secondaryContainer = Grey80,
     onSecondaryContainer = Grey20,
     secondarySurface = Grey90,
+    secondaryText = Grey60,
+
     background = Color.Black,
     onBackground = BodyDark,
+
     error = Error,
     success = Success,
     warning = Warning
