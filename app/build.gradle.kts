@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -5,11 +8,15 @@ plugins {
     alias(libs.plugins.compose.compiler)
 
     kotlin("kapt")
+    kotlin("plugin.serialization")
 }
 
 android {
     namespace = "com.elfen.letsred"
     compileSdk = 34
+
+    val localProperties = Properties()
+    localProperties.load(FileInputStream(rootProject.file("local.properties")))
 
     defaultConfig {
         applicationId = "com.elfen.letsred"
@@ -25,6 +32,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            resValue("string", "client_id", localProperties["CLIENT_ID"] as String)
+            resValue("string", "redirect_uri", localProperties["REDIRECT_URI"] as String)
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -76,6 +87,8 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
     implementation(libs.moshi.kotlin)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.hilt.navigation.compose)
     annotationProcessor(libs.androidx.room.compiler)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.androidx.room.compiler)

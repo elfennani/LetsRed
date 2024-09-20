@@ -22,16 +22,17 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.elfen.letsred.ui.composables.Button
 import com.elfen.letsred.ui.theme.AppTheme
+import kotlinx.serialization.Serializable
 
+@Serializable
 object LoginRoute
 
 @Composable
-private fun LoginScreen(
-    onLogin: () -> Unit = {}
-) {
+private fun LoginScreen(onLogin: () -> Unit = {}) {
     Scaffold(
         containerColor = AppTheme.colorScheme.background,
         contentColor = AppTheme.colorScheme.onBackground
@@ -67,7 +68,7 @@ private fun LoginScreen(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {}
+                onClick = { onLogin() }
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Login,
@@ -81,10 +82,11 @@ private fun LoginScreen(
 }
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    LoginScreen(
-        onLogin = { /* TODO */ }
-    )
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    LoginScreen(onLogin = viewModel::initiate)
 }
 
 @Preview

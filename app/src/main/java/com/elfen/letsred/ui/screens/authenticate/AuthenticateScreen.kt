@@ -10,13 +10,18 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.elfen.letsred.ui.screens.feed.FeedRoute
 import com.elfen.letsred.ui.theme.AppTheme
+import kotlinx.serialization.Serializable
 
-object AuthenticateRoute
 
 @Composable
 private fun AuthenticateScreen(modifier: Modifier = Modifier) {
@@ -33,7 +38,21 @@ private fun AuthenticateScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AuthenticateScreen(navController: NavController) {
+fun AuthenticateScreen(
+    navController: NavController,
+    viewModel: AuthenticateViewModel = hiltViewModel()
+) {
+    val isDone by viewModel.done.collectAsStateWithLifecycle()
+
+    LaunchedEffect(isDone) {
+        if (isDone)
+            navController.navigate(FeedRoute) {
+                popUpTo<FeedRoute> {
+                    inclusive = true
+                }
+            }
+    }
+
     Scaffold(
         containerColor = AppTheme.colorScheme.background,
         contentColor = AppTheme.colorScheme.onBackground,

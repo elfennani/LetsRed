@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class RetrofitModule {
     @Provides
-    fun provideBaseUrl(): String = "https://aniwatch-api-green.vercel.app"
+    fun provideBaseUrl(): String = "https://oauth.reddit.com/"
 
 //    @Provides
 //    @Singleton

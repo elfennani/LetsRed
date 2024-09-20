@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScaffold(
-    drawerState: DrawerState = rememberDrawerState(DrawerValue.Open),
+    drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     user: User,
     onClickMore: () -> Unit = {},
     onNavigate: (Any) -> Unit = {},
