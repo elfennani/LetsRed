@@ -13,10 +13,14 @@ hiltAndroid = "2.52"
 retrofit = "2.11.0"
 converterGson = "2.11.0"
 datastorePreferences = "1.1.1"
+richeditorCompose = "1.0.0-rc06"
 room = "2.6.1"
 materialIconsExtended = "1.7.2"
 coilCompose = "2.7.0"
 kotlinxDatetime = "0.6.1"
+converterMoshi = "2.11.0"
+loggingInterceptor = "5.0.0-alpha.14"
+moshiKotlin = "1.15.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +49,10 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
+richeditor-compose = { module = "com.mohamedrejeb.richeditor:richeditor-compose", version.ref = "richeditorCompose" }
+converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "converterMoshi" }
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

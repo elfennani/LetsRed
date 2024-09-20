@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,15 +29,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.key.Key.Companion.H
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.elfen.letsred.models.User
 import com.elfen.letsred.ui.theme.AppTheme
+import com.elfen.letsred.utilities.decodeEntities
 import kotlinx.datetime.Instant
 
 @Composable
-fun ProfileHeader(modifier: Modifier = Modifier, user: User) {
+fun ProfileHeader(
+    modifier: Modifier = Modifier,
+    user: User,
+    onFollow: () -> Unit = {},
+    onUnfollow: () -> Unit = {}
+) {
     val isFollowed by remember {
         derivedStateOf { user.isFollowed }
     }
@@ -74,7 +80,7 @@ fun ProfileHeader(modifier: Modifier = Modifier, user: User) {
                         .background(AppTheme.colorScheme.secondaryContainer)
                 )
 
-                FollowButton(isFollowed)
+                FollowButton(isFollowed, onFollow, onUnfollow)
             }
         }
 
@@ -96,19 +102,19 @@ fun ProfileHeader(modifier: Modifier = Modifier, user: User) {
                 )
             }
 
-            ProfileInfoText(user)
+            ProfileInfoText(user = user)
         }
     }
 }
 
 @Composable
-private fun FollowButton(isFollowed: Boolean) {
+private fun FollowButton(isFollowed: Boolean, onFollow: () -> Unit, onUnfollow: () -> Unit) {
     AnimatedContent(targetState = isFollowed, label = "isFollowed") { isFollowed ->
         if (!isFollowed) {
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
-                    .clickable { }
+                    .clickable { onFollow() }
                     .background(AppTheme.colorScheme.primary)
                     .padding(
                         horizontal = AppTheme.sizes.small,
@@ -125,7 +131,7 @@ private fun FollowButton(isFollowed: Boolean) {
             Row(
                 modifier = Modifier
                     .clip(CircleShape)
-                    .clickable { }
+                    .clickable { onUnfollow() }
                     .border(1.dp, AppTheme.colorScheme.primary, CircleShape)
                     .padding(
                         horizontal = AppTheme.sizes.small,
@@ -171,10 +177,7 @@ private fun ProfileHeaderPrev(isFollowed: Boolean = false) {
                         Html.FROM_HTML_MODE_COMPACT
                     ).toString(),
                     isFollowed = isFollowed,
-                    banner = Html.fromHtml(
-                        "https://styles.redditmedia.com/t5_4xrrob/styles/profileBanner_89ckm9wnqo8c1.jpeg?width=1280&amp;height=384&amp;crop=1280:384,smart&amp;s=3cf2753d1cf85e8f406b75f81ac29c643c2ed1d0",
-                        Html.FROM_HTML_MODE_COMPACT
-                    ).toString()
+                    banner = "https://styles.redditmedia.com/t5_4xrrob/styles/profileBanner_89ckm9wnqo8c1.jpeg?width=1280&amp;height=384&amp;crop=1280:384,smart&amp;s=3cf2753d1cf85e8f406b75f81ac29c643c2ed1d0".decodeEntities(),
                 )
             )
         }

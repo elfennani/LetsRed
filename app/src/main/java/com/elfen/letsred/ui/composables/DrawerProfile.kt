@@ -3,16 +3,20 @@ package com.elfen.letsred.ui.composables
 import android.content.res.Configuration
 import android.text.Html
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +43,11 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.until
 
 @Composable
-fun DrawerProfile(modifier: Modifier = Modifier, user: User) {
+fun DrawerProfile(
+    modifier: Modifier = Modifier,
+    user: User,
+    onClickMore: () -> Unit = {},
+) {
     Column(
         modifier = modifier
             .padding(
@@ -62,11 +70,16 @@ fun DrawerProfile(modifier: Modifier = Modifier, user: User) {
                     .background(AppTheme.colorScheme.secondaryContainer)
             )
 
-            Icon(
-                Icons.Default.MoreHoriz,
-                contentDescription = null,
-                tint = AppTheme.colorScheme.secondaryText
-            )
+            IconButton(
+                onClick = { onClickMore() },
+                modifier = Modifier.offset(x = AppTheme.sizes.small)
+            ) {
+                Icon(
+                    Icons.Default.MoreHoriz,
+                    contentDescription = null,
+                    tint = AppTheme.colorScheme.secondaryText
+                )
+            }
         }
 
         Column(
@@ -80,7 +93,7 @@ fun DrawerProfile(modifier: Modifier = Modifier, user: User) {
             )
         }
 
-        ProfileInfoText(user)
+        ProfileInfoText(user = user)
     }
 }
 
@@ -94,25 +107,27 @@ private fun DrawerProfilePrev() {
             modifier = Modifier.width(284.dp)
         ) {
             DrawerProfile(
-                user = User(
-                    id = "33o2ukxg",
-                    name = "Nizar Elfennani",
-                    username = "elfennani",
-                    karma = 24481,
-                    createdAt = Instant.fromEpochSeconds(1548694396),
-                    icon = Html.fromHtml(
-                        "https://styles.redditmedia.com/t5_vjcux/styles/profileIcon_snoo4eb7f2fb-0e85-4c4d-8ec2-0ee989b23566-headshot-f.png?width=256&amp;height=256&amp;crop=256:256,smart&amp;s=1e981ef29c72b2db0f07ad1f2e48b28b490d9f8f",
-                        Html.FROM_HTML_MODE_COMPACT
-                    ).toString(),
-                    isFollowed = true, banner = "invenire"
-                )
+                user = dummyUser
             )
         }
     }
 }
 
+val dummyUser = User(
+    id = "33o2ukxg",
+    name = "Nizar Elfennani",
+    username = "elfennani",
+    karma = 24481,
+    createdAt = Instant.fromEpochSeconds(1548694396),
+    icon = Html.fromHtml(
+        "https://styles.redditmedia.com/t5_vjcux/styles/profileIcon_snoo4eb7f2fb-0e85-4c4d-8ec2-0ee989b23566-headshot-f.png?width=256&amp;height=256&amp;crop=256:256,smart&amp;s=1e981ef29c72b2db0f07ad1f2e48b28b490d9f8f",
+        Html.FROM_HTML_MODE_COMPACT
+    ).toString(),
+    isFollowed = true, banner = "invenire"
+)
+
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun DrawerProfilePrevDark(){
+private fun DrawerProfilePrevDark() {
     DrawerProfilePrev()
 }

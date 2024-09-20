@@ -17,7 +17,10 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.until
 
 @Composable
-fun ProfileInfoText(user: User) {
+fun ProfileInfoText(
+    modifier: Modifier = Modifier,
+    user: User
+) {
     val createdAtString by remember {
         derivedStateOf {
             user.createdAt.until(
@@ -51,5 +54,5 @@ fun ProfileInfoText(user: User) {
         }
     }
 
-    Text(info)
+    Text(info, modifier = modifier)
 }
