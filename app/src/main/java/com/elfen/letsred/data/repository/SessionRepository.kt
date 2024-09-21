@@ -16,7 +16,9 @@ import com.elfen.letsred.data.local.models.LocalSession
 import com.elfen.letsred.data.local.models.asAppModel
 import com.elfen.letsred.data.local.relations.asAppModel
 import com.elfen.letsred.data.remote.APIService
+import com.elfen.letsred.data.remote.AuthAPIService
 import com.elfen.letsred.data.remote.models.asEntity
+import com.elfen.letsred.models.Session
 import com.elfen.letsred.utilities.decodeEntities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -25,7 +27,7 @@ import kotlinx.datetime.Clock
 
 class SessionRepository(
     private val context: Context,
-    private val apiService: APIService,
+    private val apiService: AuthAPIService,
     private val sessionDao: SessionDao,
     private val userDao: UserDao,
     private val dataStore: DataStore<Preferences>
@@ -52,6 +54,8 @@ class SessionRepository(
         "wikiread"
     )
     private val clientId = context.getString(R.string.client_id)
+    private val basicCred = Base64
+        .encodeToString("$clientId:".toByteArray(), Base64.NO_WRAP)
     private val redirectUri = context.getString(R.string.redirect_uri)
 
     val sessions = sessionDao.getSessionsWithUsersFlow()
@@ -79,12 +83,8 @@ class SessionRepository(
 
     suspend fun validateToken(code: String) {
         withContext(Dispatchers.IO) {
-            val auth = Base64
-                .encodeToString("$clientId:".toByteArray(), Base64.NO_WRAP)
-            Log.d("SessionRepository", "validateToken: $auth")
-
             val token = apiService.getAccessToken(
-                authorization = "Basic $auth",
+                authorization = "Basic $basicCred",
                 code = code,
                 redirectUri = redirectUri,
             )
@@ -95,7 +95,7 @@ class SessionRepository(
                 session = LocalSession(
                     accessToken = token.accessToken,
                     userId = user.id,
-                    refreshToken = token.refreshToken,
+                    refreshToken = token.refreshToken!!,
                     expiration = Clock.System.now().epochSeconds + token.expiresIn,
                 )
             )
@@ -106,8 +106,25 @@ class SessionRepository(
         }
     }
 
-    suspend fun changeSession(userId:String){
-        withContext(Dispatchers.IO){
+    suspend fun refreshToken(session: Session): LocalSession {
+        val token = apiService.getAccessTokenFromRefreshToken(
+            authorization = "Basic $basicCred",
+            refreshToken = session.refreshToken,
+        )
+
+        val newSession = LocalSession(
+            accessToken = token.accessToken,
+            userId = session.user.id,
+            refreshToken = token.refreshToken!!,
+            expiration = Clock.System.now().epochSeconds + token.expiresIn,
+        )
+        sessionDao.upsertSession(session = newSession)
+
+        return newSession
+    }
+
+    suspend fun changeSession(userId: String) {
+        withContext(Dispatchers.IO) {
             dataStore.edit {
                 it[SESSION_USER_KEY] = userId
             }

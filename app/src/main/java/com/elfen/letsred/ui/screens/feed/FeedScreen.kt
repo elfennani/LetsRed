@@ -26,6 +26,7 @@ object FeedRoute
 @Composable
 fun FeedScreen(
     state: FeedUIState,
+    onNavigate: (Any) -> Unit,
     onAddAccount: () -> Unit = {},
     onSetSession: (Session) -> Unit = {}
 ) {
@@ -39,7 +40,7 @@ fun FeedScreen(
         null
     }
 
-    HomeScaffold(user = user, onClickMore = { sessionSelector = true }) {
+    HomeScaffold(user = user, onClickMore = { sessionSelector = true }, onNavigate = onNavigate) {
         if (sessionSelector) {
             SessionSelector(
                 sessionState = state.session,
@@ -63,6 +64,7 @@ fun FeedScreen(navController: NavController, viewModel: FeedViewModel = hiltView
     FeedScreen(
         state = state,
         onAddAccount = viewModel::onAddAccount,
-        onSetSession = viewModel::setSession
+        onSetSession = viewModel::setSession,
+        onNavigate = navController::navigate
     )
 }

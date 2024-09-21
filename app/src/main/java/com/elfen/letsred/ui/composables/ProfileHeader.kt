@@ -10,11 +10,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -28,7 +31,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -47,26 +53,36 @@ fun ProfileHeader(
     val isFollowed by remember {
         derivedStateOf { user.isFollowed }
     }
+    val density = LocalDensity.current
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.extraLarge3 / 2)
     ) {
-        Box {
+        Box(
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            val topHeight = WindowInsets.statusBars
+                .asPaddingValues()
+                .calculateTopPadding()
+            val iconSize = AppTheme.sizes.extraLarge3
+
             AsyncImage(
                 model = user.banner,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(AppTheme.sizes.extraLarge3)
                     .background(AppTheme.colorScheme.secondarySurface)
+                    .height(AppTheme.sizes.extraLarge2*3 + topHeight)
+                    .alpha(0.75f)
             )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = AppTheme.sizes.large)
-                    .offset(y = AppTheme.sizes.extraLarge3 / 2),
+                    .offset(y = (iconSize / 2)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom
             ) {
@@ -74,7 +90,7 @@ fun ProfileHeader(
                     model = user.icon,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(AppTheme.sizes.extraLarge3)
+                        .size(iconSize)
                         .clip(AppTheme.shapes.community)
                         .background(AppTheme.colorScheme.secondaryContainer)
                 )

@@ -42,6 +42,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.elfen.letsred.models.User
+import com.elfen.letsred.ui.screens.profile.ProfileRoute
+import com.elfen.letsred.ui.screens.profile.ProfileScreen
 import com.elfen.letsred.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 
@@ -90,7 +92,10 @@ fun HomeScaffold(
                     DrawerOption(
                         label = "Profile",
                         icon = Icons.Default.Person,
-                        modifier = Modifier.clickable { /* TODO */ }
+                        modifier = Modifier.clickable {
+                            if (user != null)
+                                onNavigate(ProfileRoute(user.username, user.id))
+                        }
                     )
                     DrawerOption(
                         label = "Notifications",
