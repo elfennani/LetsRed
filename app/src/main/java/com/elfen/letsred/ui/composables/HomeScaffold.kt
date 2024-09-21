@@ -1,18 +1,15 @@
 package com.elfen.letsred.ui.composables
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -20,11 +17,11 @@ import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.elfen.letsred.models.User
 import com.elfen.letsred.ui.theme.AppTheme
 import kotlinx.coroutines.launch
@@ -53,7 +49,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScaffold(
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
-    user: User,
+    user: User?,
     onClickMore: () -> Unit = {},
     onNavigate: (Any) -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
@@ -68,20 +64,27 @@ fun HomeScaffold(
                 drawerContentColor = AppTheme.colorScheme.onBackground,
                 modifier = Modifier.width(AppTheme.sizes.extraLarge5)
             ) {
-                DrawerProfile(
-                    user = user,
-                    modifier = Modifier
-                        .clickable { /* TODO: navigate to profile */ }
-                        .padding(top = AppTheme.sizes.large),
-                    onClickMore = onClickMore
-                )
+                AnimatedContent(targetState = user, label = "profile") {
+                    if (it != null) {
+                        DrawerProfile(
+                            user = it,
+                            modifier = Modifier
+                                .clickable { /* TODO: navigate to profile */ }
+                                .padding(top = AppTheme.sizes.large),
+                            onClickMore = onClickMore
+                        )
+                    } else
+                        CircularProgressIndicator()
+                }
                 HorizontalDivider(
                     modifier = Modifier
                         .padding(horizontal = AppTheme.sizes.large),
                     color = AppTheme.colorScheme.secondaryContainer
                 )
                 Column(
-                    modifier = Modifier.padding(vertical = AppTheme.sizes.extraSmall).weight(1f),
+                    modifier = Modifier
+                        .padding(vertical = AppTheme.sizes.extraSmall)
+                        .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.extraSmall2)
                 ) {
                     DrawerOption(
@@ -114,7 +117,11 @@ fun HomeScaffold(
                             y = AppTheme.sizes.small
                         )
                     ) {
-                        Icon(Icons.Default.WbSunny, null, tint = AppTheme.colorScheme.onSecondaryContainer)
+                        Icon(
+                            Icons.Default.WbSunny,
+                            null,
+                            tint = AppTheme.colorScheme.onSecondaryContainer
+                        )
                     }
                 }
             }
@@ -203,7 +210,7 @@ fun DrawerOption(
 @Composable
 private fun HomeScaffoldPrev() {
     AppTheme {
-        HomeScaffold(user = dummyUser){}
+        HomeScaffold(user = dummyUser) {}
     }
 }
 
@@ -211,6 +218,6 @@ private fun HomeScaffoldPrev() {
 @Composable
 private fun HomeScaffoldPrevDark() {
     AppTheme {
-        HomeScaffold(user = dummyUser){}
+        HomeScaffold(user = dummyUser) {}
     }
 }

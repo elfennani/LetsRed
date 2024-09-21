@@ -21,19 +21,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.elfen.letsred.models.Session
 import com.elfen.letsred.models.User
 import com.elfen.letsred.ui.theme.AppTheme
 import kotlinx.datetime.Instant
 
 @Composable
-fun ProfileListItem(modifier: Modifier = Modifier, user: User) {
+fun ProfileListItem(
+    modifier: Modifier = Modifier,
+    icon: String?,
+    name: String?,
+    username: String,
+    selected: Boolean = false
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(AppTheme.sizes.normal)
     ) {
         AsyncImage(
-            model = user.icon,
+            model = icon,
             contentDescription = null,
             modifier = Modifier
                 .size(48.dp)
@@ -41,15 +48,17 @@ fun ProfileListItem(modifier: Modifier = Modifier, user: User) {
                 .background(AppTheme.colorScheme.secondaryContainer)
         )
         Column(modifier = Modifier.weight(1f)) {
+            if(!name.isNullOrEmpty()){
+                Text(
+                    text = name,
+                    style = AppTheme.typography.labelLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Text(
-                text = user.name + "oenimo ofimeof oefimef o ",
-                style = AppTheme.typography.labelLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                "@${user.username}",
+                "@$username",
                 style = AppTheme.typography.bodyExtraSmall,
                 color = AppTheme.colorScheme.secondaryText,
                 maxLines = 1,
@@ -58,12 +67,24 @@ fun ProfileListItem(modifier: Modifier = Modifier, user: User) {
             )
         }
 
-        Icon(
-            imageVector = Icons.Default.Check,
-            contentDescription = null,
-            tint = AppTheme.colorScheme.primary
-        )
+        if (selected) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+                tint = AppTheme.colorScheme.primary
+            )
+        }
     }
+}
+
+@Composable
+fun ProfileListItem(modifier: Modifier = Modifier, user: User, selected: Boolean = false) {
+    ProfileListItem(modifier, user.icon, user.name, user.username, selected)
+}
+
+@Composable
+fun ProfileListItem(modifier: Modifier = Modifier, session: Session, selected: Boolean = false) {
+    ProfileListItem(modifier, session.user, selected)
 }
 
 @Preview
@@ -87,7 +108,8 @@ private fun ProfileListItemPrev() {
                         Html.FROM_HTML_MODE_COMPACT
                     ).toString(),
                     isFollowed = false,
-                    banner = "feugait"
+                    banner = "feugait",
+                    over18 = false
                 )
             )
         }

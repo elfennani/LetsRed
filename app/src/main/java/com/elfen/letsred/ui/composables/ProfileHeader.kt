@@ -29,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.key.Key.Companion.H
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -94,7 +93,9 @@ fun ProfileHeader(
             Column(
                 verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.extraSmall2)
             ) {
-                Text(user.name, style = AppTheme.typography.headingNormal)
+                if (!user.name.isNullOrEmpty()) {
+                    Text(user.name, style = AppTheme.typography.headingNormal)
+                }
                 Text(
                     "@${user.username}",
                     style = AppTheme.typography.bodyExtraSmall,
@@ -178,6 +179,7 @@ private fun ProfileHeaderPrev(isFollowed: Boolean = false) {
                     ).toString(),
                     isFollowed = isFollowed,
                     banner = "https://styles.redditmedia.com/t5_4xrrob/styles/profileBanner_89ckm9wnqo8c1.jpeg?width=1280&amp;height=384&amp;crop=1280:384,smart&amp;s=3cf2753d1cf85e8f406b75f81ac29c643c2ed1d0".decodeEntities(),
+                    over18 = true
                 )
             )
         }

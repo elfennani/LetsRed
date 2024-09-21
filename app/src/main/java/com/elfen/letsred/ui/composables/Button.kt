@@ -23,11 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elfen.letsred.ui.theme.AppTheme
+import kotlinx.serialization.json.JsonNull.content
 import androidx.compose.material3.Button as NativeButton
 
 @Composable
 fun Button(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -36,7 +38,9 @@ fun Button(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = AppTheme.colorScheme.primary,
-            contentColor = AppTheme.colorScheme.onPrimary
+            contentColor = AppTheme.colorScheme.onPrimary,
+            disabledContainerColor = AppTheme.colorScheme.secondaryContainer,
+            disabledContentColor = AppTheme.colorScheme.onSecondaryContainer
         ),
         content = {
             Row(
@@ -48,6 +52,7 @@ fun Button(
                 ) { content() }
             }
         },
+        enabled = enabled,
         shape = RoundedCornerShape(12.dp),
         contentPadding = PaddingValues(16.dp)
     )
@@ -60,6 +65,25 @@ private fun ButtonPrev() {
         Surface {
             Column(Modifier.padding(16.dp)) {
                 Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(text = "Login to an existing account")
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ButtonDisabledPrev() {
+    AppTheme {
+        Surface {
+            Column(Modifier.padding(16.dp)) {
+                Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth(), enabled = false) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = null,
