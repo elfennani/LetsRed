@@ -5,10 +5,10 @@ import com.elfen.letsred.utilities.decodeEntities
 import com.elfen.letsred.utilities.emptyAsNull
 import com.squareup.moshi.Json
 
-data class NetworkUser(
+data class RemoteUser(
     val id: String,
     val name: String,
-    val subreddit: NetworkUserCommunity,
+    val subreddit: RemoteUserCommunity,
     @Json(name = "icon_img") val icon: String?,
     @Json(name = "total_karma") val karma: Int,
     @Json(name="has_subscribed") val subscribed: Boolean,
@@ -17,7 +17,7 @@ data class NetworkUser(
     @Json(name = "over_18") val over18: Boolean,
 )
 
-fun NetworkUser.asEntity() = LocalUser(
+fun RemoteUser.asEntity() = LocalUser(
     id = id,
     name = subreddit.title.emptyAsNull()?.decodeEntities(),
     username = name,
@@ -27,5 +27,4 @@ fun NetworkUser.asEntity() = LocalUser(
     icon = icon?.emptyAsNull()?.decodeEntities(),
     createdAt = createdUTC*1000,
     over18 = over18
-
 )

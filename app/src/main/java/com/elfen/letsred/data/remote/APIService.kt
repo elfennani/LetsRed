@@ -1,7 +1,7 @@
 package com.elfen.letsred.data.remote
 
-import com.elfen.letsred.data.remote.models.NetworkAccessToken
-import com.elfen.letsred.data.remote.models.NetworkUser
+import com.elfen.letsred.data.remote.models.RemoteAccessToken
+import com.elfen.letsred.data.remote.models.RemoteUser
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -16,7 +16,7 @@ interface APIService {
         @Field("code") code: String,
         @Field("redirect_uri") redirectUri: String,
         @Field("grant_type") grantType: String = "authorization_code"
-    ): NetworkAccessToken
+    ): RemoteAccessToken
 
     @GET("/api/v1/me")
     suspend fun getCurrentUser(
@@ -24,5 +24,5 @@ interface APIService {
          * Authorization Bearer header
          */
         @Header("Authorization") authorization: String,
-    ): NetworkUser
+    ): RemoteUser
 }
