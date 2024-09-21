@@ -9,7 +9,7 @@ data class Post(
     val createdAt: Instant,
     val votes: Int,
     val comments: Int,
-    val content: Content,
+    val content: Content?,
     val author: String,
     val authorId: String,
 )

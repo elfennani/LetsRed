@@ -2,6 +2,7 @@ package com.elfen.letsred.ui.screens.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elfen.letsred.data.repository.FeedRepository
 import com.elfen.letsred.data.repository.SessionRepository
 import com.elfen.letsred.models.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,9 +15,11 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
+    private val feedRepository: FeedRepository
 ) : ViewModel() {
     private val sessions = sessionRepository.sessions
     private val activeSession = sessionRepository.activeSession
+    val posts = feedRepository.feedPagerByQuery("best")
 
     val state = combine(sessions, activeSession) { sessions, activeSession ->
         val currentUser = sessions.find { it.user.id == activeSession }?.user
@@ -31,6 +34,7 @@ class FeedViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         FeedUIState()
     )
+
 
     fun setSession(session: Session) {
         viewModelScope.launch {

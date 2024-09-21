@@ -43,11 +43,14 @@ android {
             resValue("string", "redirect_uri", localProperties["REDIRECT_URI"] as String)
         }
         release {
+            resValue("string", "client_id", localProperties["CLIENT_ID"] as String)
+            resValue("string", "redirect_uri", localProperties["REDIRECT_URI"] as String)
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -95,6 +98,9 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.room.paging)
     annotationProcessor(libs.androidx.room.compiler)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.androidx.room.compiler)

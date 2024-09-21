@@ -33,5 +33,9 @@ class DatabaseModule {
 
     @Singleton
     @Provides
+    fun providePostDao(database: AppDatabase) = database.postDao()
+
+    @Singleton
+    @Provides
     fun provideDataStore(@ApplicationContext context: Context) = context.dataStore
 }

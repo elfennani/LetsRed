@@ -18,13 +18,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.elfen.letsred.models.Content
-import com.elfen.letsred.models.Post
 import com.elfen.letsred.ui.theme.AppTheme
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
 
 @Composable
-fun PostContent(modifier: Modifier = Modifier, content: Content) {
+fun PostContent(modifier: Modifier = Modifier, content: Content?) {
     when(content){
         is Content.CrossPost -> {
             Text(
@@ -76,6 +75,8 @@ fun PostContent(modifier: Modifier = Modifier, content: Content) {
                 color = AppTheme.colorScheme.secondaryText,
             )
         }
+
+        else -> {}
     }
 }
 
