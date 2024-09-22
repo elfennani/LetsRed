@@ -10,6 +10,8 @@ data class Post(
     val votes: Int,
     val comments: Int,
     val content: Content?,
-    val author: String,
-    val authorId: String,
+    val author: String?,
+    val authorId: String?,
+    val isDeleted: Boolean,
+    val body: String?,
 )

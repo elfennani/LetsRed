@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.elfen.letsred.models.User
 import com.elfen.letsred.ui.screens.profile.ProfileRoute
 import com.elfen.letsred.ui.screens.profile.ProfileScreen
+import com.elfen.letsred.ui.screens.saved.SavedRoute
 import com.elfen.letsred.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 
@@ -105,7 +106,10 @@ fun HomeScaffold(
                     DrawerOption(
                         label = "Saved",
                         icon = Icons.Default.Bookmarks,
-                        modifier = Modifier.clickable { /* TODO */ }
+                        modifier = Modifier.clickable {
+                            if (user != null)
+                                onNavigate(SavedRoute(user.username))
+                        }
                     )
                 }
 

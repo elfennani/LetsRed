@@ -1,5 +1,6 @@
 package com.elfen.letsred.data.local.models
 
+import android.util.Log
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -13,8 +14,8 @@ data class LocalPost(
     @PrimaryKey val id: String,
     val title: String,
     val score: Int,
-    val author: String,
-    val authorFullId: String,
+    val author: String?,
+    val authorFullId: String?,
     val comments: Int,
     val createdAt: Long,
     val link: String,
@@ -29,6 +30,7 @@ data class LocalPost(
 
 fun LocalPost.asAppModel(): Post {
     var content: Content? = null
+    Log.d("LocalPost", "asAppModel: $images")
 
     if (!images.isNullOrEmpty()) {
         content = Content.Images(images = images.map { it.asAppModel() })
@@ -39,8 +41,6 @@ fun LocalPost.asAppModel(): Post {
             height = video.height,
             isGIF = video.isGIF
         )
-    }else if(!text.isNullOrEmpty()){
-        content = Content.Text(text)
     }
 
     return Post(
@@ -52,6 +52,8 @@ fun LocalPost.asAppModel(): Post {
         comments = comments,
         content = content,
         author = author,
-        authorId = authorFullId.replace("t2_", "")
+        authorId = authorFullId?.replace("t2_", ""),
+        isDeleted = author == null,
+        body = text
     )
 }

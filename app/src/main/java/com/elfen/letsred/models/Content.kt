@@ -10,9 +10,5 @@ sealed interface Content {
         val isGIF: Boolean
     ) : Content
 
-    data class Text(
-        val text: String,
-    ) : Content
-
     data class CrossPost(val post: Post) : Content
 }

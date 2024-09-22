@@ -26,11 +26,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,8 @@ import com.elfen.letsred.models.Post
 import com.elfen.letsred.ui.theme.AppTheme
 import com.elfen.letsred.utilities.decodeEntities
 import com.elfen.letsred.utilities.readableTime
+import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import com.mohamedrejeb.richeditor.ui.material3.RichText
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -116,6 +120,24 @@ fun PostCard(modifier: Modifier = Modifier, post: Post) {
         }
 
         Text(post.title, style = AppTheme.typography.labelLarge)
+
+        if(!post.body.isNullOrEmpty()){
+            val state = rememberRichTextState()
+            val linkColor = AppTheme.colorScheme.secondaryText
+
+            LaunchedEffect(Unit) {
+                state.setHtml(post.body)
+                state.config.linkColor = linkColor
+            }
+
+            RichText(
+                state,
+                style = AppTheme.typography.bodyExtraSmall,
+                color = AppTheme.colorScheme.secondaryText,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
 
         if (post.content != null) {
             PostContent(content = post.content)
@@ -236,9 +258,11 @@ val postText = Post(
     createdAt = Instant.fromEpochSeconds(1726831515),
     votes = 128,
     comments = 5803,
-    content = Content.Text("&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Link to previous post: &lt;a href=\"https://www.reddit.com/r/GalaxyA54/s/96gVyACBdB\"&gt;https://www.reddit.com/r/GalaxyA54/s/96gVyACBdB&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;I&amp;#39;m not sure when, but recently my mum sent her A54 off to a repair shop. It works perfectly now, but they didn&amp;#39;t tell her what part went wrong, just &amp;quot;faulty part replaced&amp;quot; I saw a comment on my original post that the power management unit may have died, which I believe. &lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;".decodeEntities()),
+    content = null,
     author = "creeping-fly349",
-    authorId = "70lurwz4"
+    authorId = "70lurwz4",
+    isDeleted = false,
+    body = "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Link to previous post: &lt;a href=\"https://www.reddit.com/r/GalaxyA54/s/96gVyACBdB\"&gt;https://www.reddit.com/r/GalaxyA54/s/96gVyACBdB&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;I&amp;#39;m not sure when, but recently my mum sent her A54 off to a repair shop. It works perfectly now, but they didn&amp;#39;t tell her what part went wrong, just &amp;quot;faulty part replaced&amp;quot; I saw a comment on my original post that the power management unit may have died, which I believe. &lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;".decodeEntities()
 )
 
 val postImage = Post(
@@ -305,5 +329,7 @@ val postImage = Post(
         )
     ),
     author = "SweetTeaRex92",
-    authorId = "5114encz"
+    authorId = "5114encz",
+    isDeleted = false,
+    body = "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Link to previous post: &lt;a href=\"https://www.reddit.com/r/GalaxyA54/s/96gVyACBdB\"&gt;https://www.reddit.com/r/GalaxyA54/s/96gVyACBdB&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;I&amp;#39;m not sure when, but recently my mum sent her A54 off to a repair shop. It works perfectly now, but they didn&amp;#39;t tell her what part went wrong, just &amp;quot;faulty part replaced&amp;quot; I saw a comment on my original post that the power management unit may have died, which I believe. &lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;".decodeEntities()
 )

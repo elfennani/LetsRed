@@ -28,9 +28,9 @@ class AppModule {
         @ApplicationContext context: Context,
         authAPIService: AuthAPIService,
         sessionDao: SessionDao,
-        userDao: UserDao,
+        @GeneralDatabase appDatabase: AppDatabase,
         dataStore: DataStore<Preferences>
-    ) = SessionRepository(context, authAPIService, sessionDao, userDao, dataStore)
+    ) = SessionRepository(context, authAPIService, sessionDao, appDatabase.userDao(), dataStore)
 
     @Singleton
     @Provides
@@ -44,6 +44,6 @@ class AppModule {
     fun provideFeedRepository(
         apiService: APIService,
         postDao: PostDao,
-        appDatabase: AppDatabase
+        @GeneralDatabase appDatabase: AppDatabase
     ) = FeedRepository(apiService, postDao, appDatabase)
 }

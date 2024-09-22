@@ -25,6 +25,8 @@ import com.elfen.letsred.ui.screens.login.LoginRoute
 import com.elfen.letsred.ui.screens.login.LoginScreen
 import com.elfen.letsred.ui.screens.profile.ProfileRoute
 import com.elfen.letsred.ui.screens.profile.ProfileScreen
+import com.elfen.letsred.ui.screens.saved.SavedRoute
+import com.elfen.letsred.ui.screens.saved.SavedScreen
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -102,6 +104,10 @@ fun Navigation(navHostController: NavHostController) {
 
         composable<ProfileRoute> {
             ProfileScreen(navHostController)
+        }
+
+        composable<SavedRoute> {
+            SavedScreen(navHostController)
         }
     }
 }

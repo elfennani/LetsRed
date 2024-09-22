@@ -24,7 +24,7 @@ import com.mohamedrejeb.richeditor.ui.material3.RichText
 
 @Composable
 fun PostContent(modifier: Modifier = Modifier, content: Content?) {
-    when(content){
+    when (content) {
         is Content.CrossPost -> {
             Text(
                 text = "CrossPost",
@@ -32,42 +32,44 @@ fun PostContent(modifier: Modifier = Modifier, content: Content?) {
                 color = AppTheme.colorScheme.secondaryText,
             )
         }
+
         is Content.Images -> {
-            val state = rememberPagerState { content.images.size }
-
-            HorizontalPager(
-                state,
-                modifier = Modifier.clip(AppTheme.shapes.image).clickable {  }
-            ) {index ->
-                val image = content.images[index]
-
+            if (content.images.size == 1) {
+                val image = content.images.first()
                 AsyncImage(
                     model = image.original.url,
                     contentDescription = null,
                     modifier = Modifier
+                        .clip(AppTheme.shapes.image)
+                        .clickable { }
                         .fillMaxWidth()
-                        .aspectRatio(image.original.width.toFloat()/image.original.height)
+                        .aspectRatio(image.original.width.toFloat() / image.original.height)
                         .background(AppTheme.colorScheme.secondaryContainer)
                 )
+            } else {
+                val state = rememberPagerState { content.images.size }
+
+                HorizontalPager(
+                    state,
+                    modifier = Modifier
+                        .clip(AppTheme.shapes.image)
+                        .clickable { }
+                ) { index ->
+                    val image = content.images[index]
+
+                    AsyncImage(
+                        model = image.original.url,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(image.original.width.toFloat() / image.original.height)
+                            .background(AppTheme.colorScheme.secondaryContainer)
+                    )
+                }
             }
         }
-        is Content.Text -> {
-            val state = rememberRichTextState()
-            val linkColor = AppTheme.colorScheme.secondaryText
 
-            LaunchedEffect(Unit) {
-                state.setHtml(content.text)
-                state.config.linkColor = linkColor
-            }
 
-            RichText(
-                state,
-                style = AppTheme.typography.bodyExtraSmall,
-                color = AppTheme.colorScheme.secondaryText,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
         is Content.Video -> {
             Text(
                 text = "Video",
