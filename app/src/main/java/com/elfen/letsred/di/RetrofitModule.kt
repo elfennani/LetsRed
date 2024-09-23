@@ -1,19 +1,20 @@
 package com.elfen.letsred.di
 
-import android.content.Context
-import com.elfen.letsred.data.local.dao.SessionDao
 import com.elfen.letsred.data.remote.APIService
 import com.elfen.letsred.data.remote.AuthAPIService
 import com.elfen.letsred.data.remote.AuthInterceptor
-import com.elfen.letsred.data.remote.PostCommentsAdapter
+import com.elfen.letsred.data.remote.models.DataType
+import com.elfen.letsred.data.remote.models.RemoteComment
+import com.elfen.letsred.data.remote.models.RemoteDataType
+import com.elfen.letsred.data.remote.models.RemoteMoreComment
+import com.elfen.letsred.data.remote.models.RemotePost
 import com.elfen.letsred.data.repository.SessionRepository
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.addAdapter
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -44,7 +45,12 @@ class RetrofitModule {
     fun provideRetrofit(baseUrl: String): Retrofit {
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
-            .add(PostCommentsAdapter())
+            .add(
+                PolymorphicJsonAdapterFactory.of(RemoteDataType::class.java, "kind")
+                    .withSubtype(RemoteDataType.Post::class.java, DataType.POST.value)
+                    .withSubtype(RemoteDataType.Comment::class.java, DataType.COMMENT.value)
+                    .withSubtype(RemoteDataType.MoreComment::class.java, DataType.MORE_COMMENTS.value)
+            )
             .build()
 
         return Retrofit.Builder()

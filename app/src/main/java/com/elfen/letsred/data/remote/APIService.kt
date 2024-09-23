@@ -1,9 +1,9 @@
 package com.elfen.letsred.data.remote
 
 import com.elfen.letsred.data.remote.models.RemoteDataResponse
+import com.elfen.letsred.data.remote.models.RemoteDataType
 import com.elfen.letsred.data.remote.models.RemotePage
 import com.elfen.letsred.data.remote.models.RemotePost
-import com.elfen.letsred.data.remote.models.RemotePostComments
 import com.elfen.letsred.data.remote.models.RemoteUser
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -24,6 +24,7 @@ interface APIService {
     suspend fun getSavedListing(@Path("username") username: String, @Query("after") after: String?):
             RemoteDataResponse<RemotePage<RemoteDataResponse<RemotePost>>>
 
-    @GET("/comments/{id}")
-    suspend fun getPostComments(@Path("id") postId: String): RemotePostComments
+    @GET("/comments/{id}?sr_detail=1&threaded=0")
+    suspend fun getPostComments(@Path("id") postId: String):
+            List<RemoteDataResponse<RemotePage<RemoteDataType>>>
 }

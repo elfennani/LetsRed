@@ -1,5 +1,6 @@
 package com.elfen.letsred.ui.screens.post
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,7 @@ class PostViewModel @Inject constructor(
         if (post == null)
             return@combine PostUiState()
 
+        Log.d("PostViewModel", "comments: $comments")
         PostUiState(post, comments)
     }.stateIn(
         viewModelScope,

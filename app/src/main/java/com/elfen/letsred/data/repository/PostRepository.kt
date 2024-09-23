@@ -7,9 +7,10 @@ import com.elfen.letsred.data.local.dao.CommentDao
 import com.elfen.letsred.data.local.dao.PostDao
 import com.elfen.letsred.data.local.models.asAppModel
 import com.elfen.letsred.data.remote.APIService
-import com.elfen.letsred.data.remote.models.asCommentEntities
-import com.elfen.letsred.data.remote.models.asEntity
+import com.elfen.letsred.data.remote.models.asCommentsEntityPair
+import com.elfen.letsred.data.remote.models.asPostEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.withContext
@@ -23,8 +24,8 @@ class PostRepository(
     suspend fun fetchPostComments(postId: String) {
         withContext(Dispatchers.IO) {
             val postComments = apiService.getPostComments(postId)
-            val (comment, moreComments) = postComments.comments.data.asCommentEntities()
-            val post = postComments.post.data.children.first().data.asEntity()
+            val (comment, moreComments) = postComments[1].data.asCommentsEntityPair()
+            val post = postComments.first().data.children.first().asPostEntity()
 
             database.withTransaction {
                 commentDao.clearCommentsByPostId(postId)
@@ -39,7 +40,7 @@ class PostRepository(
 
     fun commentsById(postId: String) = commentDao
         .getCommentsByPostId(postId)
-        .zip(commentDao.getMoreByPostId(postId)) { comments, moreComments ->
+        .combine(commentDao.getMoreByPostId(postId)) { comments, moreComments ->
             val appComments = comments.map { it.asAppModel() }
             val appMoreComments = moreComments.map { it.asAppModel() }
 

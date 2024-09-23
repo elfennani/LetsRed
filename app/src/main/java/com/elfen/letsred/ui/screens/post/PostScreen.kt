@@ -99,6 +99,7 @@ fun PostScreen(
                             Column(
                                 modifier = Modifier
                                     .background(AppTheme.colorScheme.background)
+                                    .fillMaxWidth()
                                     .padding(AppTheme.sizes.normal)
                                     .padding(start = AppTheme.sizes.extraSmall * comment.depth),
                                 verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.extraSmall)
@@ -118,6 +119,7 @@ fun PostScreen(
                             Column(
                                 modifier = Modifier
                                     .background(AppTheme.colorScheme.background)
+                                    .fillMaxWidth()
                                     .padding(AppTheme.sizes.normal)
                                     .padding(start = AppTheme.sizes.extraSmall * comment.depth),
                                 verticalArrangement = Arrangement.spacedBy(AppTheme.sizes.extraSmall)

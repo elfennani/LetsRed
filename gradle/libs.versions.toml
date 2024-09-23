@@ -26,6 +26,7 @@ hiltNavigationCompose = "1.2.0"
 pagingRuntime = "3.3.2"
 pagingCompose = "3.3.2"
 roomPaging = "2.7.0-alpha08"
+moshiAdapters = "1.15.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,6 +64,7 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "pagingRuntime" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingCompose" }
 androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "roomPaging" }
+moshi-adapters = { group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshiAdapters" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
