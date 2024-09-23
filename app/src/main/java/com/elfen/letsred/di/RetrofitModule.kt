@@ -5,8 +5,10 @@ import com.elfen.letsred.data.local.dao.SessionDao
 import com.elfen.letsred.data.remote.APIService
 import com.elfen.letsred.data.remote.AuthAPIService
 import com.elfen.letsred.data.remote.AuthInterceptor
+import com.elfen.letsred.data.remote.PostCommentsAdapter
 import com.elfen.letsred.data.repository.SessionRepository
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.addAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -23,7 +25,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class RetrofitModule {
-    val okHttpClient = OkHttpClient
+    private val okHttpClient = OkHttpClient
         .Builder()
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
@@ -42,6 +44,7 @@ class RetrofitModule {
     fun provideRetrofit(baseUrl: String): Retrofit {
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
+            .add(PostCommentsAdapter())
             .build()
 
         return Retrofit.Builder()

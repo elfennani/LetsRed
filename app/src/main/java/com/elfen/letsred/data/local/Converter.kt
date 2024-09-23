@@ -26,6 +26,13 @@ class Converter {
             LocalImage::class.java
         )
     )
+    private val listStringAdapter = moshi.adapter<List<String>>(
+        Types.newParameterizedType(
+            List::class.java,
+            String::class.java
+        )
+    )
+
 
     @TypeConverter
     fun fromJsonToImageSource(json: String?): LocalImageSource? {
@@ -37,6 +44,7 @@ class Converter {
         return imageSourceAdapter.toJson(imageSource ?: return null)
     }
 
+
     @TypeConverter
     fun fromListImageSourceToJson(imageSources: List<LocalImageSource>?): String? {
         return listImageSourceAdapter.toJson(imageSources ?: return null)
@@ -47,15 +55,26 @@ class Converter {
         return listImageSourceAdapter.fromJson(json ?: return null)!!
     }
 
+
     @TypeConverter
     fun fromListImageToJson(imageList: List<LocalImage>?): String? {
         return listImageAdapter.toJson(imageList ?: return null)
     }
 
-
     @TypeConverter
     fun fromJsonToListImage(json: String?): List<LocalImage>? {
         return listImageAdapter.fromJson(json ?: return null)!!
+    }
+
+
+    @TypeConverter
+    fun fromListStringToJson(stringList: List<String>?): String? {
+        return listStringAdapter.toJson(stringList ?: return null)
+    }
+
+    @TypeConverter
+    fun fromJsonToListString(json: String?): List<String>? {
+        return listStringAdapter.fromJson(json ?: return null)
     }
 }
 

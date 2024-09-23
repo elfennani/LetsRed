@@ -23,6 +23,7 @@ import com.elfen.letsred.models.User
 import com.elfen.letsred.ui.composables.HomeScaffold
 import com.elfen.letsred.ui.composables.PostCard
 import com.elfen.letsred.ui.screens.feed.composables.SessionSelector
+import com.elfen.letsred.ui.screens.post.PostRoute
 import com.elfen.letsred.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
 
@@ -68,7 +69,7 @@ fun FeedScreen(
                 if (post != null) {
                     PostCard(
                         modifier = Modifier
-                            .clickable { }
+                            .clickable { onNavigate(PostRoute(post.id, post.community.name)) }
                             .padding(AppTheme.sizes.normal),
                         post = post
                     )

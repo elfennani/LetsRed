@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.elfen.letsred.data.local.AppDatabase
+import com.elfen.letsred.data.local.dao.CommentDao
 import com.elfen.letsred.data.local.dao.PostDao
 import com.elfen.letsred.data.local.dao.SessionDao
 import com.elfen.letsred.data.local.dao.UserDao
 import com.elfen.letsred.data.remote.APIService
 import com.elfen.letsred.data.remote.AuthAPIService
 import com.elfen.letsred.data.repository.FeedRepository
+import com.elfen.letsred.data.repository.PostRepository
 import com.elfen.letsred.data.repository.SessionRepository
 import com.elfen.letsred.data.repository.UserRepository
 import dagger.Module
@@ -44,6 +46,15 @@ class AppModule {
     fun provideFeedRepository(
         apiService: APIService,
         postDao: PostDao,
-        @GeneralDatabase appDatabase: AppDatabase
+        @UserDatabase appDatabase: AppDatabase
     ) = FeedRepository(apiService, postDao, appDatabase)
+
+    @Singleton
+    @Provides
+    fun providePostRepository(
+        apiService: APIService,
+        postDao: PostDao,
+        commentDao: CommentDao,
+        @UserDatabase appDatabase: AppDatabase
+    ) = PostRepository(apiService, postDao, commentDao, appDatabase)
 }

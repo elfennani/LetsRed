@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
 import com.elfen.letsred.data.local.dataStore
 import com.elfen.letsred.data.repository.SessionRepository
 import com.elfen.letsred.ui.screens.authenticate.AuthenticateScreen
@@ -23,6 +24,8 @@ import com.elfen.letsred.ui.screens.feed.FeedRoute
 import com.elfen.letsred.ui.screens.feed.FeedScreen
 import com.elfen.letsred.ui.screens.login.LoginRoute
 import com.elfen.letsred.ui.screens.login.LoginScreen
+import com.elfen.letsred.ui.screens.post.PostRoute
+import com.elfen.letsred.ui.screens.post.PostScreen
 import com.elfen.letsred.ui.screens.profile.ProfileRoute
 import com.elfen.letsred.ui.screens.profile.ProfileScreen
 import com.elfen.letsred.ui.screens.saved.SavedRoute
@@ -108,6 +111,10 @@ fun Navigation(navHostController: NavHostController) {
 
         composable<SavedRoute> {
             SavedScreen(navHostController)
+        }
+
+        composable<PostRoute> {
+            PostScreen(navHostController, it.toRoute())
         }
     }
 }

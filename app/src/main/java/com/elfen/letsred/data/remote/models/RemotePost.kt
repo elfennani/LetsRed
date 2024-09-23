@@ -26,7 +26,7 @@ data class RemotePost(
     @Json(name = "selftext_html") val selfTextHtml: String?,
     @Json(name = "sr_detail") val subredditDetails: RemoteSubredditDetails,
     @Json(name = "media_metadata") val mediaMetadata: Map<String, RemoteMediaMetadata>?
-)
+): RemoteDataType("t3")
 
 fun RemotePost.asEntity(): LocalPost {
     var images = preview?.images?.map { image ->

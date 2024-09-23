@@ -15,6 +15,9 @@ interface PostDao {
     suspend fun upsertPosts(posts: List<LocalPost>)
 
     @Upsert
+    suspend fun upsertPost(post: LocalPost)
+
+    @Upsert
     suspend fun upsertPagingPosts(posts: List<LocalPagingPost>)
 
     @Query("SELECT createdAt FROM LocalPagingPost WHERE `query`=:query ORDER BY createdAt DESC LIMIT 1")

@@ -30,7 +30,6 @@ data class LocalPost(
 
 fun LocalPost.asAppModel(): Post {
     var content: Content? = null
-    Log.d("LocalPost", "asAppModel: $images")
 
     if (!images.isNullOrEmpty()) {
         content = Content.Images(images = images.map { it.asAppModel() })
