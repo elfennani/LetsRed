@@ -7,6 +7,6 @@ data class RemoteVideo(
     val duration: Int,
     val width: Int,
     val height: Int,
-    @Json(name = "fallback_url") val fallbackURL: String,
+    @Json(name = "fallback_url") val fallbackURL: String?,
     @Json(name = "is_gif") val isGIF: Boolean
 )

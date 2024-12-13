@@ -1,9 +1,9 @@
 package com.elfen.letsred.data.remote.models
 
-import com.elfen.letsred.data.local.models.LocalComment
-import com.elfen.letsred.data.local.models.LocalCommentMore
+import com.elfen.letsred.models.Comment
+import com.elfen.letsred.utilities.decodeEntities
 import com.squareup.moshi.Json
-import java.nio.file.Files.find
+import java.util.regex.Pattern
 
 data class RemoteComment(
     // Common properties
@@ -11,6 +11,7 @@ data class RemoteComment(
     val depth: Int,
 
     // Normal comment properties
+    // @Json(name = "body_html")
     val body: String,
     val author: String?,
     val score: Int,
@@ -26,48 +27,50 @@ data class RemoteMoreComment(
     val children: List<String>,
 )
 
-fun RemoteComment.asCommentEntity(order: Float, moreId: String? = null) = LocalComment(
-    id = id,
-    postId = postFullId!!.substring(3),
-    body = body!!,
-    author = if (author.isNullOrEmpty() || authorFullId.isNullOrEmpty()) null else author,
-    authorId = if (author.isNullOrEmpty() || authorFullId.isNullOrEmpty()) null
-    else authorFullId.substring(3),
-    depth = depth,
-    moreId = moreId,
-    votes = score!!,
-    createdAt = createdUTC!! * 1000,
-    order = order
-)
 
-fun RemoteMoreComment.asMoreCommentsEntity(order: Float, postId: String) = LocalCommentMore(
-    id = id,
-    postId = postId,
-    depth = depth,
-    comments = children!!,
-    count = count!!,
-    order = order
-)
+fun RemotePage<RemoteDataType>.asAppModel(): List<Comment>{
+    val comments = children.mapIndexed { index, comment ->
+        if(comment is RemoteDataType.Comment){
+            comment.data.run {
+                Comment.Content(
+                    id = id,
+                    body = body.decodeEntities().let { body ->
+                        val urlPattern = "(https?://)?(www\\.)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?"
 
-fun RemotePage<RemoteDataType>.asCommentsEntityPair(): Pair<List<LocalComment>, List<LocalCommentMore>> {
-    val comments: MutableList<LocalComment> = mutableListOf()
-    var moreComments: MutableList<LocalCommentMore> = mutableListOf()
+                        // Compile the regex pattern
+                        val pattern = Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE)
+                        val matcher = pattern.matcher(body)
 
-    val postId = children
-        .filterIsInstance<RemoteDataType.Comment>()
-        .first { !it.data.postFullId.isNullOrEmpty() }
-        ?.data?.postFullId?.substring(3) ?: return Pair(emptyList(), emptyList())
+                        // Collect all the URLs into a list
+                        val links = mutableListOf<String>()
+                        while (matcher.find()) {
+                            links.add(matcher.group())
+                        }
+                        var newBody = body
 
-    children.forEachIndexed { index, comment ->
-        if (comment is RemoteDataType.MoreComment) {
-            moreComments += comment.data.asMoreCommentsEntity(
-                order = index.toFloat(),
-                postId = postId
-            )
-        } else if (comment is RemoteDataType.Comment) {
-            comments += comment.data.asCommentEntity(index.toFloat())
-        }
+                        links.filter { it.contains("preview.redd.it") || it.contains("i.redd.it") }
+                            .distinct()
+                            .forEach { newBody = newBody.replace(it, "![image]($it)") }
+
+                        newBody
+                    },
+                    authorUsername = if (author.isNullOrEmpty() || authorFullId.isNullOrEmpty()) null else author,
+                    authorId = if (author.isNullOrEmpty() || authorFullId.isNullOrEmpty()) null
+                    else authorFullId.substring(3),
+                    depth = depth,
+                    order = index
+                )
+            }
+        } else if (comment is RemoteDataType.MoreComment){
+            comment.data.run {
+                Comment.More(
+                    id = id,
+                    depth = depth,
+                    order = index
+                )
+            }
+        } else throw Exception()
     }
 
-    return Pair(comments, moreComments)
+    return comments;
 }

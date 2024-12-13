@@ -1,13 +1,13 @@
 package com.elfen.letsred.data.remote.models
 
-import com.elfen.letsred.data.local.models.LocalImage
-import com.elfen.letsred.data.local.models.LocalImageSource
-import com.elfen.letsred.data.local.models.LocalPost
-import com.elfen.letsred.data.local.models.LocalPostCommunity
-import com.elfen.letsred.data.local.models.LocalVideo
+import com.elfen.letsred.data.local.models.asAppModel
+import com.elfen.letsred.models.Community
+import com.elfen.letsred.models.Content
+import com.elfen.letsred.models.Post
 import com.elfen.letsred.utilities.decodeEntities
 import com.elfen.letsred.utilities.emptyAsNull
 import com.squareup.moshi.Json
+import kotlinx.datetime.Instant
 
 data class RemotePost(
     val id: String,
@@ -28,16 +28,18 @@ data class RemotePost(
     @Json(name = "media_metadata") val mediaMetadata: Map<String, RemoteMediaMetadata>?
 )
 
-fun RemotePost.asEntity(): LocalPost {
+fun RemotePost.asAppModel(): Post{
+    var content: Content? = null
+
     var images = preview?.images?.map { image ->
-        LocalImage(
-            source = LocalImageSource(
+        RemoteImage(
+            source = RemoteImageSource(
                 url = image.source.url.decodeEntities(),
                 width = image.source.width,
                 height = image.source.height
             ),
             resolutions = image.resolutions.map { res ->
-                LocalImageSource(
+                RemoteImageSource(
                     url = res.url.decodeEntities(),
                     width = res.width,
                     height = res.height
@@ -46,28 +48,19 @@ fun RemotePost.asEntity(): LocalPost {
         )
     }
 
-    var video = media?.video?.let {
-        LocalVideo(
-            hlsURL = it.hlsURL.decodeEntities(),
-            duration = it.duration,
-            width = it.width,
-            height = it.height,
-            fallbackURL = it.fallbackURL.decodeEntities(),
-            isGIF = it.isGIF
-        )
-    }
+    var video = media?.video
 
     if (mediaMetadata != null) {
         if (mediaMetadata.none { it.value.isVideo() }) {
             images = mediaMetadata.map { (id, image) ->
-                LocalImage(
-                    source = LocalImageSource(
+                RemoteImage(
+                    source = RemoteImageSource(
                         url = image.source!!.url.decodeEntities(),
                         width = image.source.width,
                         height = image.source.height
                     ),
                     resolutions = image.previews!!.map { res ->
-                        LocalImageSource(
+                        RemoteImageSource(
                             url = res.url.decodeEntities(),
                             width = res.width,
                             height = res.height
@@ -77,46 +70,47 @@ fun RemotePost.asEntity(): LocalPost {
             }
         } else {
             video = mediaMetadata.entries.first().let { (key, value) ->
-                LocalVideo(
+                RemoteVideo(
                     hlsURL = value.hlsUrl!!.decodeEntities(),
                     duration = -1,
                     width = value.width!!,
                     height = value.height!!,
                     fallbackURL = null,
-                    isGIF = value.isGif ?: false
+                    isGIF = value.isGif == true
                 )
             }
         }
     }
 
-    return LocalPost(
+
+
+    if (!images.isNullOrEmpty()) {
+        content = Content.Images(images = images.map { it.asAppModel() })
+    } else if (video != null) {
+        content = Content.Video(
+            url = video.hlsURL,
+            width = video.width,
+            height = video.height,
+            isGIF = video.isGIF
+        )
+    }
+
+    return Post(
         id = id,
         title = title.decodeEntities(),
-        score = score,
-        author = author.takeIf { it != "[deleted]" },
-        authorFullId = authorFullId,
-        comments = numComments,
-        createdAt = createdAt * 1000,
-        link = permalink.decodeEntities(),
-        spoiler = spoiler,
-        over18 = over18,
-        isVideo = isVideo,
-        text = selfTextHtml?.emptyAsNull()?.decodeEntities(),
-        community = LocalPostCommunity(
+        community = Community(
             id = subredditDetails.fullId.replace("t5_", ""),
             name = subredditDetails.displayName,
             icon = subredditDetails.iconImage?.emptyAsNull()?.decodeEntities()
                 ?: subredditDetails.communityIcon?.emptyAsNull()?.decodeEntities()
         ),
-        images = images,
-        video = video
+        createdAt = Instant.fromEpochMilliseconds(createdAt * 1000),
+        votes = score,
+        comments = numComments,
+        content = content,
+        author = author.takeIf { it != "[deleted]" },
+        authorId = authorFullId,
+        isDeleted = author == "[deleted]",
+        body = selfTextHtml?.emptyAsNull()?.decodeEntities(),
     )
-}
-
-fun RemoteDataType.asPostEntity(): LocalPost {
-    if(this is RemoteDataType.Post){
-        return data.asEntity()
-    }
-
-    throw Exception("RemoteDataType is not RemotePost")
 }

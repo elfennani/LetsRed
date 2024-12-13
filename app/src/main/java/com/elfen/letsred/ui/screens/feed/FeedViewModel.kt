@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.elfen.letsred.MainActivity
 import com.elfen.letsred.data.repository.FeedRepository
 import com.elfen.letsred.data.repository.SessionRepository
@@ -26,7 +27,7 @@ class FeedViewModel @Inject constructor(
 ) : ViewModel() {
     private val sessions = sessionRepository.sessions
     private val activeSession = sessionRepository.activeSession
-    val posts = feedRepository.feedPagerByQuery(FeedSource.Best)
+    val posts = feedRepository.feedPagerByQuery(FeedSource.Best).cachedIn(viewModelScope)
 
     val state = combine(sessions, activeSession) { sessions, activeSession ->
         val currentUser = sessions.find { it.user.id == activeSession }?.user

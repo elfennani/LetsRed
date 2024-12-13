@@ -102,6 +102,11 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.room.paging)
     implementation(libs.moshi.adapters)
+    implementation(libs.multiplatform.markdown.renderer)
+    implementation(libs.multiplatform.markdown.renderer.m2)
+    implementation(libs.multiplatform.markdown.renderer.coil2)
+    implementation(libs.multiplatform.markdown.renderer.coil3)
+    implementation(libs.mohamedrejeb.richeditor.compose)
     annotationProcessor(libs.androidx.room.compiler)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.androidx.room.compiler)

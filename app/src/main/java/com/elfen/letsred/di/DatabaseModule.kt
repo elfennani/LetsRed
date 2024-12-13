@@ -61,13 +61,6 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun providePostDao(@UserDatabase database: AppDatabase) = database.postDao()
-
-    @Singleton
-    @Provides
     fun provideDataStore(@ApplicationContext context: Context) = context.dataStore
 
-    @Singleton
-    @Provides
-    fun provideCommentDao(@UserDatabase database: AppDatabase) = database.commentDao()
 }

@@ -9,6 +9,7 @@ import com.elfen.letsred.data.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,24 +20,13 @@ class PostViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val route = savedStateHandle.toRoute<PostRoute>()
-    private val post = postRepository.postById(route.id)
-    private val comments = postRepository.commentsById(route.id)
+    private val postDetails = postRepository.postDetailsById(route.id)
 
-    val state = combine(post, comments) { post, comments ->
-        if (post == null)
-            return@combine PostUiState()
-
-        Log.d("PostViewModel", "comments: $comments")
+    val state = postDetails.map { (post, comments) ->
         PostUiState(post, comments)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         PostUiState()
     )
-
-    init {
-        viewModelScope.launch {
-            postRepository.fetchPostComments(route.id)
-        }
-    }
 }
